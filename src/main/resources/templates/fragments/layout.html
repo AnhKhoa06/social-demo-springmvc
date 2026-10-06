@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | Social Demo'">Social Demo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar">
+    <a class="brand" th:href="@{/}">Social Demo</a>
+    <div class="nav-links">
+        <a th:href="@{/}">Trang chủ</a>
+        <a th:href="@{/feed}">Bảng tin</a>
+        <a th:href="@{/posts}">Bài viết</a>
+        <a th:href="@{/users}">Người dùng</a>
+    </div>
+    <div class="nav-auth">
+        <span th:if="${session.currentUser != null}">
+            Xin chào, <b th:text="${session.currentUser.username}"></b>
+            <a th:href="@{/logout}">Đăng xuất</a>
+        </span>
+        <span th:unless="${session.currentUser != null}">
+            <a th:href="@{/login}">Đăng nhập</a>
+            <a th:href="@{/register}">Đăng ký</a>
+        </span>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="footer">
+    <p>Nhóm 3 - Demo Spring MVC</p>
+</footer>
+
+</body>
+</html>
