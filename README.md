@@ -26,16 +26,6 @@ CREATE DATABASE IF NOT EXISTS social_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_
 3. Mở `SocialDemoApplication.java`, bấm **Run**. Thấy dòng `Started SocialDemoApplication` là thành công.
 4. Vào http://localhost:8080 và đăng nhập thử bằng `khoa`, `kiet` hoặc `cuong`, mật khẩu `123456`.
 
-**Lỗi thường gặp**
-
-| Lỗi | Cách xử lý |
-|---|---|
-| `Access denied for user 'root'` | Sai password MySQL, đổi thành `123456` |
-| `Unknown database 'social_demo'` | Chưa tạo database, làm lại bước 2 |
-| `Communications link failure` | MySQL chưa chạy, mở Services của Windows và Start `MySQL80` |
-| Dòng đỏ trong `pom.xml` | Bấm Reload Maven (chữ **m** ở góc phải editor) |
-| Giao diện không đổi | Nhấn Ctrl + F5 |
-
 ## 3. Làm việc với Git
 
 **Không push lên `main`.** Mỗi người làm trên nhánh riêng, xong thì tạo Pull Request cho Khoa merge.
