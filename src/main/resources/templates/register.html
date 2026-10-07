@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Đăng ký')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container narrow">
+    <div class="card">
+        <h2>Tạo tài khoản</h2>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <form th:action="@{/register}" method="post">
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirmPassword">Nhập lại mật khẩu</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+            <button class="btn btn-primary" type="submit">
+                <svg class="icon"><use href="#i-user-plus"/></svg> Đăng ký
+            </button>
+        </form>
+
+        <p>Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

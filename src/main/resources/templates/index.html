@@ -4,12 +4,64 @@
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-<div class="container">
-    <div class="card">
-        <h2>Chào mừng đến với Social Demo</h2>
-        <p>Ứng dụng demo mạng xã hội đơn giản xây dựng bằng Spring MVC + Thymeleaf + MySQL.</p>
-        <a class="btn" th:href="@{/login}">Đăng nhập</a>
-        <a class="btn" th:href="@{/register}">Đăng ký</a>
+<!-- ===== KHÁCH CHƯA ĐĂNG NHẬP ===== -->
+<div class="container" th:if="${session.currentUser == null}">
+    <section class="hero">
+        <h1>Kết nối và chia sẻ cùng mọi người</h1>
+        <p>Demo mạng xã hội đơn giản xây dựng bằng Spring MVC, Thymeleaf và MySQL.</p>
+        <a class="btn btn-primary btn-lg" th:href="@{/register}">
+            <svg class="icon"><use href="#i-user-plus"/></svg> Tạo tài khoản
+        </a>
+        <a class="btn btn-outline btn-lg" th:href="@{/login}">
+            <svg class="icon"><use href="#i-login"/></svg> Đăng nhập
+        </a>
+    </section>
+
+    <section class="features">
+        <div class="card feature">
+            <div class="feature-icon"><svg class="icon"><use href="#i-pen"/></svg></div>
+            <h3>Đăng bài viết</h3>
+            <p>Tạo, sửa, xóa bài viết của riêng bạn.</p>
+        </div>
+        <div class="card feature">
+            <div class="feature-icon"><svg class="icon"><use href="#i-users"/></svg></div>
+            <h3>Theo dõi bạn bè</h3>
+            <p>Follow và unfollow những người bạn quan tâm.</p>
+        </div>
+        <div class="card feature">
+            <div class="feature-icon"><svg class="icon"><use href="#i-newspaper"/></svg></div>
+            <h3>Bảng tin cá nhân</h3>
+            <p>Xem bài mới nhất từ những người bạn theo dõi.</p>
+        </div>
+    </section>
+</div>
+
+<!-- ===== ĐÃ ĐĂNG NHẬP ===== -->
+<div class="container" th:if="${session.currentUser != null}">
+    <div class="layout">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+        <main class="main">
+            <div class="card">
+                <h2>Chào mừng trở lại, <span th:text="${session.currentUser.username}">khoa</span></h2>
+                <p style="color: var(--muted); margin: 0;">Hôm nay bạn muốn làm gì?</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Lối tắt</div>
+                <div class="quick-links">
+                    <a class="quick-link" th:href="@{/feed}">
+                        <svg class="icon"><use href="#i-newspaper"/></svg> Xem bảng tin
+                    </a>
+                    <a class="quick-link" th:href="@{/posts}">
+                        <svg class="icon"><use href="#i-pen"/></svg> Bài viết của tôi
+                    </a>
+                    <a class="quick-link" th:href="@{/users}">
+                        <svg class="icon"><use href="#i-users"/></svg> Tìm người theo dõi
+                    </a>
+                </div>
+            </div>
+        </main>
     </div>
 </div>
 
