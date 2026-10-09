@@ -25,14 +25,20 @@ public class PostController {
         this.postService = postService;
     }
 
-    // Danh sách bài viết của người đang đăng nhập
+    // USER: bài của mình. ADMIN: tất cả bài viết
     @GetMapping
     public String list(HttpSession session, Model model) {
         User current = (User) session.getAttribute("currentUser");
         if (current == null) {
             return "redirect:/login";
         }
-        model.addAttribute("posts", postService.findByUser(current.getId()));
+        if ("ADMIN".equals(current.getRole())) {
+            model.addAttribute("posts", postService.findAll());
+            model.addAttribute("pageTitle", "Tất cả bài viết");
+        } else {
+            model.addAttribute("posts", postService.findByUser(current.getId()));
+            model.addAttribute("pageTitle", "Bài viết của tôi");
+        }
         return "posts/list";
     }
 
@@ -133,7 +139,7 @@ public class PostController {
         if (current == null) {
             return "redirect:/login";
         }
-        if (postService.delete(id, current.getId())) {
+        if (postService.delete(id, current)) {
             redirectAttributes.addFlashAttribute("success", "Đã xóa bài viết.");
         } else {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền xóa bài viết này.");

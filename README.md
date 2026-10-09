@@ -1,22 +1,47 @@
 # Social Demo - Spring MVC (Nhóm 3)
 
-Demo mạng xã hội đơn giản: đăng ký / đăng nhập, bài viết, follow, bảng tin.
+Demo mạng xã hội thu nhỏ cho bài tập giữa kỳ môn Phát triển phần mềm hướng đối tượng, topic **Spring MVC**.
 
-**Công nghệ:** JDK 17, Spring Boot 4.1.1 (Spring MVC + JPA), Thymeleaf, MySQL 8, Maven, IntelliJ IDEA.
+**Công nghệ:** JDK 17, Spring Boot 4.1.1 (Spring MVC + Spring Data JPA), Thymeleaf, MySQL 8, Maven, IntelliJ IDEA.
 
-## 1. Cài đặt (một lần)
+> Demo xây dựng bằng Spring MVC, chạy trên nền Spring Boot để đơn giản hóa cấu hình.
 
-- JDK 17, IntelliJ IDEA, Git
-- MySQL Server 8 + MySQL Workbench, đặt password của `root` là **`123456`** (cả nhóm dùng chung)
-- Chấp nhận lời mời Collaborator trên GitHub từ Khoa
+## 1. Tính năng
 
-## 2. Kéo code về và chạy
+| Tính năng | URL | Bảng CSDL |
+|---|---|---|
+| Đăng ký, đăng nhập, đăng xuất (mật khẩu mã hóa BCrypt, lưu phiên bằng session) | `/register`, `/login`, `/logout` | `users` |
+| Bài viết: đăng, xem, sửa, xóa | `/posts`, `/posts/new`, `/posts/{id}/edit`, `/posts/{id}/delete` | `posts`, `users` |
+| Danh sách người dùng, theo dõi, bỏ theo dõi | `/users`, `/users/follow`, `/users/unfollow` | `users`, `follows` |
+| Bảng tin: bài viết của những người mình theo dõi | `/feed` | `posts`, `follows`, `users` |
+
+## 2. Vai trò và phân quyền
+
+| Vai trò | Quyền |
+|---|---|
+| Khách | Xem trang chủ, đăng ký, đăng nhập |
+| USER | Đăng bài; xem, sửa, xóa bài của mình; theo dõi, bỏ theo dõi; xem bảng tin |
+| ADMIN | Như USER, ngoài ra xem **tất cả** bài viết và **xóa** được mọi bài (kiểm duyệt). Không sửa được bài của người khác |
+
+Đăng ký mới luôn là USER.
+
+**Tài khoản mẫu** (mật khẩu đều là `123456`):
+
+| Tài khoản | Vai trò |
+|---|---|
+| `khoa` | ADMIN |
+| `kiet` | USER |
+| `cuong` | USER |
+
+## 3. Cài đặt và chạy
+
+**Yêu cầu:** JDK 17, IntelliJ IDEA, Git, MySQL Server 8 và MySQL Workbench. Đặt password của `root` là **`123456`** (nếu máy bạn dùng password khác thì sửa `spring.datasource.password` trong `application.properties` trên máy mình, không commit phần sửa đó).
 
 ```bash
 git clone https://github.com/AnhKhoa06/social-demo-springmvc.git
 ```
 
-1. IntelliJ: **File -> Open** -> chọn thư mục project (có `pom.xml`), chờ Maven tải xong.
+1. IntelliJ: **File -> Open**, chọn thư mục project (có `pom.xml`), chờ Maven tải thư viện xong.
 2. MySQL Workbench: tạo database rỗng (bảng và dữ liệu mẫu sẽ tự tạo khi chạy app):
 
 ```sql
@@ -24,42 +49,28 @@ CREATE DATABASE IF NOT EXISTS social_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_
 ```
 
 3. Mở `SocialDemoApplication.java`, bấm **Run**. Thấy dòng `Started SocialDemoApplication` là thành công.
-4. Vào http://localhost:8080 và đăng nhập thử bằng `khoa`, `kiet` hoặc `cuong`, mật khẩu `123456`.
+4. Mở http://localhost:8080 và đăng nhập bằng một trong các tài khoản mẫu ở mục 2.
 
-## 3. Làm việc với Git
+## 4. Cơ sở dữ liệu
 
-**Không push lên `main`.** Mỗi người làm trên nhánh riêng, xong thì tạo Pull Request cho Khoa merge.
+Ba bảng theo đề: `users` (có thêm cột `password`), `posts`, `follows`.
 
-```bash
-# Bắt đầu (một lần)
-git checkout main
-git pull origin main
-git checkout -b feature/ten-nhanh      # Kiệt: feature/posts, Cường: feature/follow
+| File | Vai trò |
+|---|---|
+| `src/main/resources/schema.sql` | Script tạo 3 bảng, tự chạy khi khởi động app |
+| `src/main/resources/data.sql` | Dữ liệu mẫu (3 tài khoản, 3 bài viết, vài quan hệ theo dõi) |
+| `database/backup_social_demo.sql` | File sao lưu toàn bộ CSDL |
 
-# Mỗi khi xong một phần nhỏ
-git add .
-git commit -m "Mô tả ngắn việc vừa làm"
-git push -u origin feature/ten-nhanh   # các lần sau chỉ cần: git push
+**Khôi phục từ file backup (không bắt buộc):** trong MySQL Workbench vào **Server -> Data Import**, chọn **Import from Self-Contained File**, trỏ tới `database/backup_social_demo.sql`, bấm **Start Import**.
+
+**Đưa CSDL về trạng thái ban đầu** khi dữ liệu bị lộn xộn:
+
+```sql
+DROP DATABASE social_demo;
+CREATE DATABASE social_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-**Trước khi tạo Pull Request**, lấy code mới nhất từ `main` về nhánh mình:
-
-```bash
-git fetch origin
-git merge origin/main
-```
-
-Nếu có conflict, IntelliJ hiện hộp thoại **Conflicts** -> bấm **Merge** -> thường giữ cả hai phần -> **Apply**. Không chắc thì hỏi Khoa.
-
-**Tạo Pull Request:** vào GitHub, bấm **Compare & pull request**, chọn `base: main` <- nhánh của bạn, đặt tiêu đề rồi **Create pull request**.
-
-Sau khi được merge: `git checkout main` rồi `git pull origin main`.
-
-**Không sửa** các file chung: `layout.html`, `style.css`, `pom.xml`, `application.properties`, `schema.sql`, `data.sql`. Cần gì nhắn Khoa.
-
-## 4. SQL
-
-Ba bảng: `users`, `posts`, `follows` (cấu trúc xem `src/main/resources/schema.sql`).
+Rồi chạy lại app, bảng và dữ liệu mẫu tự tạo lại.
 
 Xem dữ liệu trong Workbench:
 
@@ -70,48 +81,30 @@ SELECT * FROM posts;
 SELECT * FROM follows;
 ```
 
-Đưa DB về trạng thái ban đầu khi dữ liệu bị lộn xộn:
-
-```sql
-DROP DATABASE social_demo;
-CREATE DATABASE social_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Rồi chạy lại app, bảng và dữ liệu mẫu tự tạo lại. **Không tự sửa cấu trúc bảng**, cần đổi thì nhắn Khoa. File backup `database/backup_social_demo.sql` do Khoa tạo sau khi merge xong.
-
-## 5. Nhiệm vụ
-
-| Người | Phần việc | Nhánh | Trang cần làm |
-|---|---|---|---|
-| Gia Kiệt | **Bài viết** (bảng `posts`): đăng bài, xem danh sách bài của mình, sửa, xóa (chỉ chủ bài mới sửa/xóa được) | `feature/posts` | `posts/list.html`, `posts/form.html` |
-| Long Cường | **Follow và Bảng tin** (bảng `follows`): danh sách người dùng + Theo dõi / Bỏ theo dõi (không tự follow mình, không follow trùng), bảng tin `/feed` hiện bài của người mình theo dõi | `feature/follow` | `users/list.html`, `feed.html` |
-| Khoa | Khung project, CSDL, đăng ký / đăng nhập, giao diện chung, merge, backup, tài liệu | `main` | |
-
-Làm xong tạo Pull Request vào `main` (xem mục 3). Làm xong gửi Khoa: **ảnh chụp màn hình** từng chức năng, **2 đến 3 đoạn code tiêu biểu** kèm giải thích ngắn, và **các lỗi đã gặp** để làm Word/PPT.
-
-## 6. Nhờ AI viết code (đồng bộ giao diện)
-
-File **`AI_GUIDE.md`** trong project chứa quy ước chung (khung trang, icon, class CSS, cách lấy người đăng nhập...). Khi nhờ AI viết code, **đính kèm file này** rồi dán câu lệnh của mình:
-
-**Kiệt:**
+## 5. Cấu trúc project
 
 ```
-Mình đính kèm file AI_GUIDE.md là quy ước chung của project Spring MVC. Hãy đọc kỹ và làm đúng theo đó.
-Nhiệm vụ của mình: chức năng BÀI VIẾT (bảng posts) gồm: đăng bài mới, xem danh sách bài của người đang đăng nhập, sửa bài, xóa bài (chỉ chủ bài mới được sửa và xóa, có hộp xác nhận khi xóa, có thông báo thành công/lỗi). Cần tạo: PostRepository, PostService, PostController, templates/posts/list.html, templates/posts/form.html.
-Chỉ viết phần của mình, không sửa file chung. Cho mình đường dẫn và toàn bộ code từng file.
+src/main/java/com/nhom3/socialdemo/
+├── config/        PasswordConfig (bean mã hóa mật khẩu)
+├── controller/    AuthController, PostController, FollowController, HomeController
+├── service/       UserService, PostService, FollowService
+├── repository/    UserRepository, PostRepository, FollowRepository
+├── model/         User, Post, Follow, FollowId
+└── SocialDemoApplication.java
+
+src/main/resources/
+├── static/css/style.css      CSS dùng chung
+├── templates/                Giao diện Thymeleaf (fragments/layout, posts, users, feed, login, register, index)
+├── schema.sql, data.sql
+└── application.properties
 ```
 
-**Cường:**
+Mô hình: **Controller -> Service -> Repository -> MySQL**, kết quả đưa vào **Model** rồi **View** (Thymeleaf) hiển thị.
 
-```
-Mình đính kèm file AI_GUIDE.md là quy ước chung của project Spring MVC. Hãy đọc kỹ và làm đúng theo đó.
-Nhiệm vụ của mình: chức năng FOLLOW và BẢNG TIN (bảng follows) gồm: trang /users liệt kê người dùng khác (không gồm bản thân) kèm số người theo dõi và nút Theo dõi / Bỏ theo dõi (không tự theo dõi mình, không theo dõi trùng); trang /feed hiện các bài viết (bảng posts) của những người mình đang theo dõi, mới nhất lên đầu, trống thì hiện thông báo. Cần tạo: FollowRepository (kể cả query bảng tin, đặt trong FollowRepository bằng @Query), FollowService, FollowController, templates/users/list.html, templates/feed.html.
-Chỉ viết phần của mình, không sửa file chung. Cho mình đường dẫn và toàn bộ code từng file.
-```
+## 6. Thành viên phụ trách phần Code - demo
 
-Sau khi AI đưa code: tạo đúng file theo đường dẫn AI ghi, chạy thử, có lỗi thì dán nguyên thông báo lỗi lại cho AI.
-
-
-
-
-http://localhost:8080
+| Người | Phần việc |
+|---|---|
+| Anh Khoa | Khung project, CSDL, đăng ký / đăng nhập / đăng xuất, giao diện chung, phân quyền, tích hợp, backup, tài liệu |
+| Gia Kiệt | Chức năng bài viết |
+| Long Cường | Chức năng theo dõi và bảng tin |

@@ -9,7 +9,7 @@
         <aside th:replace="~{fragments/layout :: sidebar}"></aside>
         <main class="main">
             <div class="card">
-                <div class="card-title">Bài viết của tôi</div>
+                <div class="card-title" th:text="${pageTitle}">Bài viết của tôi</div>
                 <div class="alert-success" th:if="${success}" th:text="${success}"></div>
                 <div class="alert-error" th:if="${error}" th:text="${error}"></div>
                 <a class="btn btn-primary" th:href="@{/posts/new}">
@@ -29,11 +29,17 @@
                 </div>
                 <div class="post-title" th:text="${p.title}">Tiêu đề</div>
                 <div class="post-body" th:text="${p.body}">Nội dung</div>
-                <div class="post-actions">
-                    <a class="btn btn-outline btn-sm" th:href="@{/posts/{id}/edit(id=${p.id})}">
+                <div class="post-actions"
+                     th:with="laChuBai=${p.user.id == session.currentUser.id},
+              laAdmin=${session.currentUser.role == 'ADMIN'}">
+                    <!-- Sửa: chỉ chủ bài -->
+                    <a class="btn btn-outline btn-sm" th:if="${laChuBai}"
+                       th:href="@{/posts/{id}/edit(id=${p.id})}">
                         <svg class="icon"><use href="#i-edit"/></svg> Sửa
                     </a>
-                    <form th:action="@{/posts/{id}/delete(id=${p.id})}" method="post" style="display:inline"
+                    <!-- Xóa: chủ bài hoặc ADMIN -->
+                    <form th:if="${laChuBai or laAdmin}"
+                          th:action="@{/posts/{id}/delete(id=${p.id})}" method="post" style="display:inline"
                           onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này không?');">
                         <button class="btn btn-danger btn-sm" type="submit">
                             <svg class="icon"><use href="#i-trash"/></svg> Xóa

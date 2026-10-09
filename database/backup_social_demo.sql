@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `social_demo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `social_demo`;
 -- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
 -- Host: localhost    Database: social_demo
@@ -39,7 +41,7 @@ CREATE TABLE `follows` (
 
 LOCK TABLES `follows` WRITE;
 /*!40000 ALTER TABLE `follows` DISABLE KEYS */;
-INSERT INTO `follows` VALUES (1,2,'2026-10-06 15:01:26'),(1,3,'2026-10-06 15:01:26'),(2,1,'2026-10-06 15:01:26');
+INSERT INTO `follows` VALUES (1,2,'2026-10-09 08:05:12'),(1,3,'2026-10-09 07:30:57'),(2,1,'2026-10-06 15:01:26'),(2,3,'2026-10-09 07:31:24'),(3,1,'2026-10-09 08:23:28'),(3,2,'2026-10-09 08:23:32');
 /*!40000 ALTER TABLE `follows` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +62,7 @@ CREATE TABLE `posts` (
   PRIMARY KEY (`id`),
   KEY `fk_posts_user` (`user_id`),
   CONSTRAINT `fk_posts_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +71,7 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'Xin chào mọi người','Đây là bài viết đầu tiên của Khoa.',1,'PUBLISHED','2026-10-06 15:01:26'),(2,'Học Spring MVC','Spring MVC chạy rất mượt với Thymeleaf.',2,'PUBLISHED','2026-10-06 15:01:26'),(3,'Hôm nay trời đẹp','Chia sẻ một chút cảm xúc cuối tuần.',3,'PUBLISHED','2026-10-06 15:01:26');
+INSERT INTO `posts` VALUES (1,'Xin chào mọi người','Đây là bài viết đầu tiên của Khoa.',1,'PUBLISHED','2026-10-09 07:53:50'),(3,'Hôm nay trời đẹp','Chia sẻ một chút cảm xúc cuối tuần.',3,'PUBLISHED','2026-10-06 15:01:26'),(6,'Học Spring MVC','Spring MVC chạy rất mượt với Thymeleaf.',2,'PUBLISHED','2026-10-09 08:48:30');
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,10 +102,6 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'khoa','$2a$10$MtNlo9iC3QwNM14dkobguezlJj3nRq53l7VcgRYNMlzWL12FlOpv.','ADMIN','2026-10-06 15:01:26'),(2,'kiet','$2a$10$MtNlo9iC3QwNM14dkobguezlJj3nRq53l7VcgRYNMlzWL12FlOpv.','USER','2026-10-06 15:01:26'),(3,'cuong','$2a$10$MtNlo9iC3QwNM14dkobguezlJj3nRq53l7VcgRYNMlzWL12FlOpv.','USER','2026-10-06 15:01:26');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'social_demo'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -114,4 +112,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-06 22:31:00
+-- Dump completed on 2026-10-09 15:51:12

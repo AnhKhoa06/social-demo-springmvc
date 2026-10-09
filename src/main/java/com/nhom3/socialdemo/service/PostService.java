@@ -6,6 +6,7 @@ import com.nhom3.socialdemo.repository.PostRepository;
 import com.nhom3.socialdemo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,11 @@ public class PostService {
     // Danh sách bài viết của một người dùng
     public List<Post> findByUser(Integer userId) {
         return postRepository.findMyPosts(userId);
+    }
+
+    // Tất cả bài viết, mới nhất lên đầu (dành cho ADMIN)
+    public List<Post> findAll() {
+        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     // Lấy bài viết nếu đúng là của người này, ngược lại trả về rỗng
@@ -57,13 +63,19 @@ public class PostService {
         return true;
     }
 
-    // Xóa bài, chỉ chủ bài mới xóa được. Trả về false nếu không được phép
-    public boolean delete(Integer postId, Integer userId) {
-        Optional<Post> found = findOwnedPost(postId, userId);
+    // Xóa bài: chủ bài hoặc ADMIN. Trả về false nếu không được phép
+    public boolean delete(Integer postId, User current) {
+        Optional<Post> found = postRepository.findById(postId);
         if (found.isEmpty()) {
             return false;
         }
-        postRepository.delete(found.get());
+        Post post = found.get();
+        boolean laChuBai = post.getUser().getId().equals(current.getId());
+        boolean laAdmin = "ADMIN".equals(current.getRole());
+        if (!laChuBai && !laAdmin) {
+            return false;
+        }
+        postRepository.delete(post);
         return true;
     }
 }
