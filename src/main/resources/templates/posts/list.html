@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bài viết của tôi')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div class="layout">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="main">
+            <div class="card">
+                <div class="card-title">Bài viết của tôi</div>
+                <div class="alert-success" th:if="${success}" th:text="${success}"></div>
+                <div class="alert-error" th:if="${error}" th:text="${error}"></div>
+                <a class="btn btn-primary" th:href="@{/posts/new}">
+                    <svg class="icon"><use href="#i-plus"/></svg> Đăng bài mới
+                </a>
+            </div>
+
+            <div class="empty-state" th:if="${#lists.isEmpty(posts)}">Chưa có bài viết nào.</div>
+
+            <div class="card" th:each="p : ${posts}">
+                <div class="post-header">
+                    <span class="avatar avatar-md" th:text="${#strings.toUpperCase(#strings.substring(p.user.username,0,1))}">K</span>
+                    <div>
+                        <div class="post-author" th:text="${p.user.username}">kiet</div>
+                        <div class="post-time" th:text="${#temporals.format(p.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</div>
+                    </div>
+                </div>
+                <div class="post-title" th:text="${p.title}">Tiêu đề</div>
+                <div class="post-body" th:text="${p.body}">Nội dung</div>
+                <div class="post-actions">
+                    <a class="btn btn-outline btn-sm" th:href="@{/posts/{id}/edit(id=${p.id})}">
+                        <svg class="icon"><use href="#i-edit"/></svg> Sửa
+                    </a>
+                    <form th:action="@{/posts/{id}/delete(id=${p.id})}" method="post" style="display:inline"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa bài viết này không?');">
+                        <button class="btn btn-danger btn-sm" type="submit">
+                            <svg class="icon"><use href="#i-trash"/></svg> Xóa
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
