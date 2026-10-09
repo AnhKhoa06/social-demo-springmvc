@@ -58,28 +58,8 @@ Ba bảng theo đề: `users` (có thêm cột `password`), `posts`, `follows`.
 | File | Vai trò |
 |---|---|
 | `src/main/resources/schema.sql` | Script tạo 3 bảng, tự chạy khi khởi động app |
-| `src/main/resources/data.sql` | Dữ liệu mẫu (3 tài khoản, 3 bài viết, vài quan hệ theo dõi) |
-| `database/backup_social_demo.sql` | File sao lưu toàn bộ CSDL |
-
-**Khôi phục từ file backup (không bắt buộc):** trong MySQL Workbench vào **Server -> Data Import**, chọn **Import from Self-Contained File**, trỏ tới `database/backup_social_demo.sql`, bấm **Start Import**.
-
-**Đưa CSDL về trạng thái ban đầu** khi dữ liệu bị lộn xộn:
-
-```sql
-DROP DATABASE social_demo;
-CREATE DATABASE social_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Rồi chạy lại app, bảng và dữ liệu mẫu tự tạo lại.
-
-Xem dữ liệu trong Workbench:
-
-```sql
-USE social_demo;
-SELECT * FROM users;
-SELECT * FROM posts;
-SELECT * FROM follows;
-```
+| `src/main/resources/data.sql` | Dữ liệu mẫu |
+| `database/backup_social_demo.sql` | File sao lưu CSDL |
 
 ## 5. Cấu trúc project
 
