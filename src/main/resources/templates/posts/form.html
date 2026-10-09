@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bài viết')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div class="layout">
+        <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+        <main class="main">
+            <div class="card">
+                <div class="card-title" th:text="${postId == null} ? 'Đăng bài mới' : 'Sửa bài viết'">Đăng bài mới</div>
+                <div class="alert-error" th:if="${error}" th:text="${error}"></div>
+
+                <form th:action="${postId == null} ? @{/posts} : @{/posts/{id}/edit(id=${postId})}" method="post">
+                    <label for="title">Tiêu đề</label>
+                    <input type="text" id="title" name="title" maxlength="255" th:value="${title}" required>
+
+                    <label for="body">Nội dung</label>
+                    <textarea id="body" name="body" rows="8" th:text="${body}"></textarea>
+
+                    <button class="btn btn-primary" type="submit">
+                        <svg class="icon"><use href="#i-send"/></svg> Lưu
+                    </button>
+                    <a class="btn btn-ghost" th:href="@{/posts}">Hủy</a>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
