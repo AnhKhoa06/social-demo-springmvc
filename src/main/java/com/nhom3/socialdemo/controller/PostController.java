@@ -12,15 +12,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.nhom3.socialdemo.aspect.RequireLogin;
 
 import java.util.Optional;
 
+// [IoC] @Controller: Spring tự tạo PostController, DispatcherServlet tự gọi các method bên dưới.
+// [AOP] @RequireLogin gắn ở cấp lớp: mọi method của controller này đều bị LoginCheckAspect kiểm tra
+//       đăng nhập trước. Vì vậy trong từng method không cần viết lại đoạn if (current == null).
 @Controller
 @RequestMapping("/posts")
+@RequireLogin
 public class PostController {
 
+    // [DI] Phụ thuộc khai báo final, gán một lần trong constructor.
     private final PostService postService;
 
+    // [DI] Constructor Injection: Spring tự truyền PostService (bean) vào đây, không cần @Autowired.
     public PostController(PostService postService) {
         this.postService = postService;
     }
@@ -28,10 +35,9 @@ public class PostController {
     // USER: bài của mình. ADMIN: tất cả bài viết
     @GetMapping
     public String list(HttpSession session, Model model) {
+        // [AOP] Nhờ @RequireLogin, tới đây chắc chắn đã đăng nhập nên currentUser không null.
         User current = (User) session.getAttribute("currentUser");
-        if (current == null) {
-            return "redirect:/login";
-        }
+
         if ("ADMIN".equals(current.getRole())) {
             model.addAttribute("posts", postService.findAll());
             model.addAttribute("pageTitle", "Tất cả bài viết");
@@ -44,11 +50,7 @@ public class PostController {
 
     // Form đăng bài mới
     @GetMapping("/new")
-    public String newForm(HttpSession session, Model model) {
-        User current = (User) session.getAttribute("currentUser");
-        if (current == null) {
-            return "redirect:/login";
-        }
+    public String newForm(Model model) {
         model.addAttribute("postId", null);
         model.addAttribute("title", "");
         model.addAttribute("body", "");
@@ -63,9 +65,7 @@ public class PostController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
         User current = (User) session.getAttribute("currentUser");
-        if (current == null) {
-            return "redirect:/login";
-        }
+
         String error = validate(title);
         if (error != null) {
             // Trả lại form kèm lỗi và giữ nguyên dữ liệu đã nhập
@@ -75,6 +75,7 @@ public class PostController {
             model.addAttribute("error", error);
             return "posts/form";
         }
+        // Gọi Service đã được tiêm vào. Service chạy trong transaction nhờ @Transactional (AOP).
         postService.create(current.getId(), title.trim(), body.trim());
         redirectAttributes.addFlashAttribute("success", "Đăng bài thành công.");
         return "redirect:/posts";
@@ -87,9 +88,7 @@ public class PostController {
                            Model model,
                            RedirectAttributes redirectAttributes) {
         User current = (User) session.getAttribute("currentUser");
-        if (current == null) {
-            return "redirect:/login";
-        }
+
         Optional<Post> found = postService.findOwnedPost(id, current.getId());
         if (found.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Bạn không có quyền sửa bài viết này.");
@@ -111,9 +110,7 @@ public class PostController {
                          Model model,
                          RedirectAttributes redirectAttributes) {
         User current = (User) session.getAttribute("currentUser");
-        if (current == null) {
-            return "redirect:/login";
-        }
+
         String error = validate(title);
         if (error != null) {
             model.addAttribute("postId", id);
@@ -136,9 +133,7 @@ public class PostController {
                          HttpSession session,
                          RedirectAttributes redirectAttributes) {
         User current = (User) session.getAttribute("currentUser");
-        if (current == null) {
-            return "redirect:/login";
-        }
+
         if (postService.delete(id, current)) {
             redirectAttributes.addFlashAttribute("success", "Đã xóa bài viết.");
         } else {

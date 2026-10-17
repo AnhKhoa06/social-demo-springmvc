@@ -27,14 +27,18 @@ public class Post {
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Integer getId() { return id; }//lấy ra
+    public void setId(Integer id) { this.id = id; }//gán vào
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
     public String getBody() { return body; }
     public void setBody(String body) { this.body = body; }
+
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }

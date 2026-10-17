@@ -7,12 +7,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+// [IoC] @Service: Spring tự tạo UserService, trong code không có "new UserService()".
 @Service
 public class UserService {
 
+    // [DI] Hai phụ thuộc, khai báo final: chỉ gán một lần trong constructor.
     private final UserRepository userRepository;
+    // Khai báo kiểu interface PasswordEncoder, không ghi thẳng BCryptPasswordEncoder:
+    // UserService không cần biết cách mã hóa cụ thể, đổi cách mã hóa không phải sửa lớp này.
     private final PasswordEncoder passwordEncoder;
 
+    // [DI] Constructor Injection: Spring tự truyền UserRepository và PasswordEncoder vào đây.
+    //      PasswordEncoder lấy từ @Bean khai báo trong PasswordConfig.
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
