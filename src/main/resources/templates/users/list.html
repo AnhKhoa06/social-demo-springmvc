@@ -17,20 +17,24 @@
 
             <div class="card">
                 <div class="user-row" th:each="user : ${users}">
-                    <span class="avatar avatar-md"
-                          th:text="${#strings.toUpperCase(#strings.substring(user.username,0,1))}">K</span>
-
-                    <div class="user-info">
-                        <div class="user-name" th:text="${user.username}">username</div>
-                        <div class="user-meta"
-                             th:text="${(followerCounts[user.id] != null ? followerCounts[user.id] : 0) + ' người theo dõi'}">
-                            0 người theo dõi
+                    
+                    <!-- Sửa post.user.id -> user.id -->
+                    <a th:href="@{/feed/users/{id}(id=${user.id})}" style="text-decoration: none; display: flex; align-items: center; gap: 12px; color: inherit;">
+                        <span class="avatar avatar-md"
+                              th:text="${#strings.toUpperCase(#strings.substring(user.username,0,1))}">K</span>
+                        
+                        <div class="user-info">
+                            <div class="user-name" th:text="${user.username}">username</div>
+                            <div class="user-meta"
+                                 th:text="${(followerCounts != null && followerCounts[user.id] != null ? followerCounts[user.id] : 0) + ' người theo dõi'}">
+                                0 người theo dõi
+                            </div>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Đang theo dõi -> nút Bỏ theo dõi -->
                     <form th:if="${#lists.contains(followedUserIds, user.id)}"
-                          th:action="@{/users/unfollow}" method="post">
+                          th:action="@{/users/unfollow}" method="post" style="margin-left: auto;">
                         <input type="hidden" name="userId" th:value="${user.id}"/>
                         <button type="submit" class="btn btn-danger btn-sm">
                             <svg class="icon"><use href="#i-user-minus"/></svg> Bỏ theo dõi
@@ -39,7 +43,7 @@
 
                     <!-- Chưa theo dõi -> nút Theo dõi -->
                     <form th:unless="${#lists.contains(followedUserIds, user.id)}"
-                          th:action="@{/users/follow}" method="post">
+                          th:action="@{/users/follow}" method="post" style="margin-left: auto;">
                         <input type="hidden" name="userId" th:value="${user.id}"/>
                         <button type="submit" class="btn btn-primary btn-sm">
                             <svg class="icon"><use href="#i-user-plus"/></svg> Theo dõi

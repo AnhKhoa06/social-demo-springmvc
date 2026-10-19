@@ -27,11 +27,16 @@
             <!-- Danh sách bài viết -->
             <div class="card" th:each="post : ${posts}">
                 <div class="post-header">
-                    <span class="avatar avatar-md"
-                          th:text="${post.user != null ? #strings.toUpperCase(#strings.substring(post.user.username,0,1)) : '?'}">K</span>
+                    <!-- Nhấn vào Avatar chuyển tới trang bài viết của User -->
+                    <a th:href="@{/feed/users/{id}(id=${post.user.id})}" style="text-decoration: none;">
+                        <span class="avatar avatar-md"
+                              th:text="${post.user != null ? #strings.toUpperCase(#strings.substring(post.user.username,0,1)) : '?'}">K</span>
+                    </a>
                     <div>
-                        <div class="post-author"
-                             th:text="${post.user != null ? post.user.username : 'Ẩn danh'}">Tác giả</div>
+                        <!-- Nhấn vào Tên chuyển tới trang bài viết của User -->
+                        <a th:href="@{/feed/users/{id}(id=${post.user.id})}" class="post-author" style="text-decoration: none; color: inherit;"
+                           th:text="${post.user != null ? post.user.username : 'Ẩn danh'}">Tác giả</a>
+                           
                         <div class="post-time"
                              th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">09/10/2026 14:53</div>
                     </div>
