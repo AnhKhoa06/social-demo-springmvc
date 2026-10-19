@@ -5,7 +5,6 @@ import com.nhom3.socialdemo.model.Post;
 import com.nhom3.socialdemo.model.User;
 import com.nhom3.socialdemo.repository.FollowRepository;
 import com.nhom3.socialdemo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +16,15 @@ import java.util.stream.Collectors;
 @Service
 public class FollowService {
 
-    @Autowired
-    private FollowRepository followRepository;
+    // 1. Khai báo thuộc tính với từ khóa final (tính bất biến)
+    private final FollowRepository followRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    // 2. Tiêm qua Constructor (không cần @Autowired nếu chỉ có 1 constructor)
+    public FollowService(FollowRepository followRepository, UserRepository userRepository) {
+        this.followRepository = followRepository;
+        this.userRepository = userRepository;
+    }
 
     public List<Post> getFeedPosts(Integer currentUserId) {
         return followRepository.findFeedPostsByUserId(currentUserId);

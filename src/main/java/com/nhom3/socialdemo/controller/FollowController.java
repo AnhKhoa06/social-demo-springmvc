@@ -4,7 +4,6 @@ import com.nhom3.socialdemo.aspect.RequireLogin;
 import com.nhom3.socialdemo.model.User;
 import com.nhom3.socialdemo.service.FollowService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequireLogin
 public class FollowController {
 
-    @Autowired
-    private FollowService followService;
+    private final FollowService followService;
+
+    public FollowController(FollowService followService) {
+        this.followService = followService;
+    }
 
     @GetMapping("/feed")
     public String viewFeed(HttpSession session, Model model) {

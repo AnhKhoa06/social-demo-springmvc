@@ -11,5 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 // RUNTIME: giữ annotation lúc chạy để Spring AOP đọc được và áp dụng aspect.
 @Retention(RetentionPolicy.RUNTIME)
+
 public @interface RequireLogin {
 }
